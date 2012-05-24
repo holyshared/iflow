@@ -5,14 +5,14 @@ var Observer = null,
 	notifyActions = {};
 
 notifyActions = {
-	'onload': 'onLoad',
-	'onunload': 'onUnLoad',
-	'onfocus': 'onFocus',
-	'onblur': 'onBlur',
+	'load': 'onLoad',
+	'unload': 'onUnLoad',
+	'focus': 'onFocus',
+	'blur': 'onBlur',
 	'beforeinsert': 'onBeforeInsert',
 	'afterinsert': 'onAfterInsert',
-	'onbeforetransition': 'onBeforeTransition',
-	'onaftertransition': 'onAfterTransition'
+	'beforetransition': 'onBeforeTransition',
+	'aftertransition': 'onAfterTransition'
 };
 
 addEventListener("DOMContentLoaded", function(evt){
@@ -69,7 +69,7 @@ Observer = flow.Observer = {
 
 		Router.register(evt.insertedNode);
 
-		evt.insertedNode.addEventListener('onunload', this.unregister, false);
+		evt.insertedNode.addEventListener('unload', this.unregister, false);
 	},
 
 	unregister: function(evt){
@@ -90,8 +90,9 @@ Router = flow.Router = {
 			notifyAction = null;
 
 		for (key in notifyActions){
-			element.addEventListener(key, Delegator.handleEvent, false);
+			element.addEventListener(key, Observer.handleEvent, false);
 		}
+
 	},
 
 	setDispatcher: function(dispatcher){
@@ -100,7 +101,7 @@ Router = flow.Router = {
 	},
 
 	getDispatcher: function(){
-		return this.dispatcher;
+		return this._dispatcher;
 	},
 
 	delegate: function(context){
