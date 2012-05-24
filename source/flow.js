@@ -9,7 +9,7 @@ if (iui === void 0 || iui === null){
 flow = iui.flow = {
 
 	application: function(){
-		return new　Application();
+		return new Application();
 	},
 
 	mixin: function(klass, extend){

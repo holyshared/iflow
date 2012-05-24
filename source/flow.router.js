@@ -50,7 +50,7 @@ Observer = flow.Observer = {
 			},
 			getActionName: function(){
 				return action;
-			}
+			},
 			getControllerName: function(){
 				return controller;
 			}
