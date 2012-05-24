@@ -1,7 +1,7 @@
-(function(iui, flow){
+(function(win, doc, flow) {
 
-var router = null,
-	delegator = {};
+var Observer = null,
+	Router = null,
 	notifyActions = {};
 
 notifyActions = {
@@ -15,7 +15,57 @@ notifyActions = {
 	'onaftertransition': 'onAfterTransition'
 };
 
-router = flow.Router = {
+Observer = flow.Observer = {
+
+	handleEvent: function(evt){
+
+		var context = null,
+			controller = null,
+			element = null,
+			action = null;
+
+		element = this;
+		controller = element.getAttribute('id');
+		action = notifyActions[evt.type];
+
+		context = {
+			getElement: function(){
+				return element;
+			},
+			getActionName: function(){
+				return action;
+			}
+			getControllerName: function(){
+				return controller;
+			}
+		};
+
+		Router.delegate(context);
+	},
+
+	register: function(evt){
+		if (evt.insertedNode === void 0 || evt.insertedNode === null){
+			return;
+		}
+		Router.register(evt.insertedNode);
+	}
+
+};
+
+
+Router = flow.Router = {
+
+	register: function(element){
+		var key = 0,
+			action = null,
+			notifyAction = null;
+
+		doc.body.addEventListener('afterinsert', Observer.register, false);
+
+		for (key in notifyActions){
+			element.addEventListener(key, Delegator.handleEvent, false);
+		}
+	},
 
 	setDispatcher: function(dispatcher){
 		this._dispatcher = dispatcher;
@@ -35,39 +85,4 @@ router = flow.Router = {
 
 };
 
-
-function delegate(evt){
-
-	var context = null,
-		__controller__ = null,
-		__element__ = null,
-		__action__ = null;
-
-	__element__ = this;
-	__controller__ = element.getAttribute('id');
-	__action__ = notifyActions[evt.type];
-
-	context = {
-		getElement: function(){
-			return __element__;
-		},
-		getActionName: function(){
-			return __action__;
-		}
-		getControllerName: function(){
-			return __controller__;
-		}
-	};
-
-	router.delegate(context);
-
-}
-
-for (var key in notifyActions){
-	delegator[key] = delegate;
-}
-
-//TODO iui.views.global -> iui.flow.Router
-iui.views.global = delegator;
-
-}(window.iui, window.iui.flow));
+}(window, document, window.iui.flow));
