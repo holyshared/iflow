@@ -15,6 +15,22 @@ notifyActions = {
 	'onaftertransition': 'onAfterTransition'
 };
 
+addEventListener("DOMContentLoaded", function(evt){
+
+	var i = null,
+		elements = null;
+
+	doc.body.addEventListener('afterinsert', Observer.register, false);
+
+	elements = doc.querySelectorAll("body > *:not(.toolbar)");
+
+	for (i = 0; i < elements.length; i++){
+		Router.register( elements[i] );
+	}
+
+}, false);
+
+
 Observer = flow.Observer = {
 
 	handleEvent: function(evt){
@@ -43,11 +59,24 @@ Observer = flow.Observer = {
 		Router.delegate(context);
 	},
 
+	//afterInsert
 	register: function(evt){
 		if (evt.insertedNode === void 0 || evt.insertedNode === null){
 			return;
 		}
+
+		evt.insertedNode.unloadMe = true;
+
 		Router.register(evt.insertedNode);
+
+		evt.insertedNode.addEventListener('onunload', this.unregister, false);
+	},
+
+	unregister: function(evt){
+		var element = evt.target;
+		if (element.unloadMe){
+			element.parentNode.removeChild(element);
+		}
 	}
 
 };
@@ -59,8 +88,6 @@ Router = flow.Router = {
 		var key = 0,
 			action = null,
 			notifyAction = null;
-
-		doc.body.addEventListener('afterinsert', Observer.register, false);
 
 		for (key in notifyActions){
 			element.addEventListener(key, Delegator.handleEvent, false);
