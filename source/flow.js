@@ -1,8 +1,8 @@
-(function(){
+(function(iui){
 
 var flow = {};
 
-if ('iui' in window){
+if (iui === void 0 || iui === null){
 	throw new Error('iui not loaded');
 }
 
@@ -21,17 +21,6 @@ flow = iui.flow = {
 		for (key in extend){
 			original[key] = extend[key];
 		}
-	},
-
-	viewsNotifyActions = {
-		'onload': 'onLoad',
-		'onunload': 'onUnLoad',
-		'onfocus': 'onFocus',
-		'onblur': 'onBlur',
-		'beforeinsert': 'onBeforeInsert',
-		'afterinsert': 'onAfterInsert',
-		'onbeforetransition': 'onBeforeTransition',
-		'onaftertransition': 'onAfterTransition'
 	}
 
 };
@@ -52,4 +41,4 @@ flow.Element = {
 
 };
 
-}());
+}(window.iui));
