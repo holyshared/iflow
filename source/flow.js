@@ -28,6 +28,11 @@ flow = iui.flow = {
 flow.Application = function Application(){
 }
 
+flow.mixin(Application, {
+
+
+});
+
 flow.Element = {
 
 	setElement: function(element){
@@ -37,6 +42,26 @@ flow.Element = {
 
 	getElement: function(){
 		return this._element;
+	},
+
+	findAll: function(selector){
+		var element = null,
+			returnValue = null;
+
+		element = this.getElement();
+		returnValue = element.querySelectorAll(selector);
+
+		return (returnValue.length > 0) ? returnValue : null;
+	},
+
+	find: function(selector){
+		var element = null,
+			returnValue = null;
+
+		element = this.getElement();
+		returnValue = element.querySelector(selector);
+
+		return (returnValue) ? returnValue : null;
 	}
 
 };

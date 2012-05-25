@@ -1,6 +1,6 @@
 (function(flow){
 
-flow.mixin(flow.Application, {
+flow.extend(flow, {
 
 	_components: {},
 
@@ -14,12 +14,6 @@ flow.mixin(flow.Application, {
 
 		flow.mixin(klass, new Component());
 		flow.mixin(klass, component);
-
-//		component.prototype = new Component();
-
-//		for (key in prototype){
-//			component.prototype[key] = prototype[key];
-//		}
 
 		this._components[identifier] = klass;
 	},
@@ -35,27 +29,36 @@ flow.mixin(flow.Application, {
 });
 
 
-
-flow.Component = function Component(){
+flow.Component = function Component(element){
+	this.setElement(element);
 }
 
 flow.mixin(Component, flow.Element);
+flow.mixin(Component, {
 
-Component.prototype.setName = function(value){
-	this._name = value;
-	return this;
-}
+	setName: function(value){
+		this._name = value;
+		return this;
+	},
 
-Component.prototype.getName = function(){
-	return this._name;
-}
+	getName: function(){
+		return this._name;
+	}
 
-Component.prototype.setup = function(){
-	this.onSetup();
-}
+	setup: function(){
+		if (this.onSetUp === void 0 || this.onSetUp === null){
+			return;
+		}
+		this.onSetUp();
+	},
 
-Component.prototype.destroy = function(){
-	this.onDestroy();
-}
+	destroy: function(){
+		if (this.onDestroy === void 0 || this.onDestroy === null){
+			return;
+		}
+		this.onDestroy();
+	}
+
+});
 
 }(iui.flow));

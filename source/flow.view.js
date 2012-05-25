@@ -1,62 +1,5 @@
 (function(flow){
 
-
-(function(views){
-
-	var key = null,
-		view = null;
-
-	view = {};
-
-	function include(view, key, action){
-		view[ key ] = function(evt){
-			var identifier = null
-				controller = null;
-
-			identifier = this.getAttribute('id');
-
-			controller = Application.loadController(identifier);
-			if (controller === void 0 || controller === null){
-				return;
-			}
-
-			if (view[ action ] !== void 0 && view[ action ] !== null){
-				view[ action ](this, controller);
-			}
-
-			if (controller[action] === void 0 || controller[action] === null){
-				return;
-			}
-
-			controller[action].apply(controller, [ evt ]);
-		}
-	}
-
-	for (key in flow.viewsNotifyActions){
-		include(view, key, flow.viewsNotifyActions[key]);
-	}
-
-	view.onLoad = function(element, controller){
-		var view = new View(element);
-		var components = flow.getComponents();
-		for (var key in components){
-			view.loadComponent(key, components[key]);
-		}
-		controller.setView(view);
-	}
-
-	views.global = view;
-
-}(window.iui.views));
-
-
-
-
-
-
-
-
-
 flow.View = function View(element){
 	this.setElement(element);
 }
@@ -64,31 +7,68 @@ flow.View = function View(element){
 flow.mixin(flow.View, flow.Element);
 flow.mixin(flow.View, {
 
-	loadComponent: function(identifier){
+	_components: {},
 
-		var elements = null,
-			viewElement = null
-			component = null,
-			loadComponent = null;
+	setUp: function(){
 
-		viewElement = this.getElement();
+		var elements = null;
 
-		component = iFlow.getComponent(identifier);
+		elements = this.findAll('[data-flow-name=*]');
 
-		elements = viewElement.querySelectorAll('[data-iflow-role="' + identifier + '"]');
-
-		for (var i = 0; i < elements.length; i++){
-			var name = elements[i].getAttribute('data-iflow-name');
-
-			loadComponent = new component();
-			loadComponent.setElement( elements[i] );
-			loadComponent.setup();
-
-			this[name] = loadComponent;
+		if (elements === null){
+			return this;
 		}
+
+		this.loadComponentsByElements(elements);
+
+	},
+
+	loadComponentsByElements: function(elements){
+
+		var i = 0,
+			role = null,
+			element = null,
+			elements = null;
+
+		for (; element = elements[i], i++){
+			this.loadComponentByElement(element);
+		}
+
+	},
+
+	loadComponentByElement: function(element){
+
+		var name = null,
+			role = null
+			loaded = null,
+			component = null;
+
+		name = element.getAttribute('data-flow-name');
+		role = element.getAttribute('data-flow-role');
+
+		component = flow.getComponent(role);
+
+		loaded = new component();
+		loaded.setName( name );
+		loaded.setElement( element );
+		loaded.setUp();
+
+		this[name] = this._components[name] = loaded;
+
+	},
+
+	destroy: function(){
+		var key = null,
+			component = null;
+
+		for (key in this._components){
+			component = this._components[key];
+			component.destroy();
+		}
+
+		this._components = {};
 	}
 
 });
-
 
 }(iui.flow));

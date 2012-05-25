@@ -85,7 +85,7 @@ Observer = flow.Observer = {
 Router = flow.Router = {
 
 	register: function(element){
-		var key = 0,
+		var key = null,
 			action = null,
 			notifyAction = null;
 
