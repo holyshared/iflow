@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" href="css/iui.css" type="text/css" />
+		<link rel="stylesheet" title="Default" href="js/lib/iui/t/default/default-theme.css"  type="text/css"/>
+		<link rel="stylesheet" href="css/iui-panel-list.css" type="text/css" />
+
+		<script src="js/iui.js"></script>
+		<script src="../source/flow.js"></script>
+		<script src="../source/flow.router.js"></script>
+		<script>
+		
+			iui.flow.Router.setDispatcher({
+			
+				dispatch: function(context){
+
+					console.log( context.getControllerName() );
+					console.log( context.getActionName() );
+					console.log( context.getElement() );
+
+				}
+			
+			});
+
+		</script>
+	</head>
+	<body>
+		<div class="toolbar">
+			<h1 id="pageTitle">Transition parformance</h1>
+		    <a id="backButton" class="button" href="#"></a>
+		</div>
+
+		<div id="home" title="home" data-role="view" class="panel" selected="true">
+        	<h2>page1</h2>
+			<a href="foo.page.html">Ajax View/Fragment (should unload)</a>
+			<a href="#next">next</a>
+		</div>
+
+		<div id="next" title="next" data-role="view" class="panel">
+        	<h2>page2</h2>
+		</div>
+
+	</body>
+</html>
