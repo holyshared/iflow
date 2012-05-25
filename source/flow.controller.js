@@ -1,6 +1,6 @@
-(function(flow){
+(function(iui, flow){
 
-flow.mixin(flow.Application, {
+flow.extend(flow, {
 
 	_controllers: {},
 
@@ -9,12 +9,11 @@ flow.mixin(flow.Application, {
 			klass = null;
 
 		klass = function(){
-			Controller.apply(this, arguments);
+			flow.Controller.apply(this, arguments);
 		};
-//		controller.prototype = new Controller();
 
-		flow.mixin(klass, new Controller());
-		flow.mixin(klass, prototype);
+		flow.mixin(klass, new flow.Controller());
+		flow.mixin(klass, controller);
 
 		this._controllers[identifier] = klass;
 	},
@@ -50,26 +49,31 @@ flow.Controller = function Controller(){
 	this._view = null;
 }
 
-Controller.prototype.setView = function(view){
-	this._view = view;
-	return this;
-}
+flow.mixin(flow.Controller, {
 
-Controller.prototype.getView = function(){
-	return this._view;
-}
+	setView: function(view){
+		this._view = view;
+		return this;
+	},
 
-Controller.prototype.setIdentifier = function(identifier){
-	this._identifier = identifier;
-	return this;
-}
+	getView: function(){
+		return this._view;
+	},
 
-Controller.prototype.getIdentifier = function(){
-	return this._identifier;
-}
+	setIdentifier: function(identifier){
+		this._identifier = identifier;
+		return this;
+	},
 
-Controller.prototype.moveTo = function(identifier){
-	iui.showPage(identifier);
-}
+	getIdentifier: function(){
+		return this._identifier;
+	},
 
-}(iui.flow));
+	moveTo: function(identifier){
+		iui.showPageById(identifier);
+	}
+
+});
+
+
+}(iui, iui.flow));

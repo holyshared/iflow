@@ -28,7 +28,7 @@ flow = iui.flow = {
 flow.Application = function Application(){
 }
 
-flow.mixin(Application, {
+flow.mixin(flow.Application, {
 
 
 });
