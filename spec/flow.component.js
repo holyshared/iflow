@@ -24,7 +24,7 @@ describe('iui.flow.Component', function(){
 		expect(registerComponent.prototype.onDestroy).toEqual(component.onDestroy);
 
 		var loadComponent = new registerComponent();
-		loadComponent.setup();
+		loadComponent.setUp();
 		loadComponent.destroy();
 
 		expect(setup).toEqual(true);

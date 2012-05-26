@@ -45,7 +45,7 @@ flow.mixin(flow.Component, {
 		return this._name;
 	},
 
-	setup: function(){
+	setUp: function(){
 		if (this.onSetUp === void 0 || this.onSetUp === null){
 			return;
 		}

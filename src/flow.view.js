@@ -19,27 +19,25 @@ flow.mixin(flow.View, {
 			return this;
 		}
 
-		this.loadComponentsByElements(elements);
+		this.loadComponentByElements(elements);
 
 	},
 
-	loadComponentsByElements: function(elements){
-
+	loadComponentByElements: function(nodes){
 		var i = 0,
 			role = null,
 			element = null,
 			elements = null;
 
-		for (; element = elements[i], i++){
+		for (; element = nodes[i]; i++){
 			this.loadComponentByElement(element);
 		}
-
 	},
 
 	loadComponentByElement: function(element){
 
 		var name = null,
-			role = null
+			role = null,
 			loaded = null,
 			component = null;
 
