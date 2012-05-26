@@ -16,7 +16,6 @@ describe('iui.flow.Controller', function(){
 		expect(registerController.prototype.onLoad).toEqual(cotroller.onLoad);
 		expect(registerController.prototype.onUnLoad).toEqual(cotroller.onUnLoad);
 
-
 		var loadController = iui.flow.loadController('foo');
 		var registerLoadController = new registerController();
 
@@ -44,19 +43,53 @@ describe('iui.flow.Controller', function(){
 
 	});
 
+
 	it('moveTo', function(){
 
+		var nextController = {},
+			thirdController = {};
+
+		function context(actions){
+			var i = 0,
+				action = null,
+				context = { pass: {} };
+
+			for (; action = actions[i]; i++){
+				context.pass[action] = false;
+				context[action] = callback(action);
+			}
+
+			return context;
+		}
+
+		function callback(action){
+			return function(){
+				this.pass[action] = true;
+			}
+		}
+
+		var nextControllerContext = context(['onLoad', 'onFocus', 'onBlur', 'onBeforeTransition', 'onAfterTransition']);
+		var thirdControllerContext = context(['onLoad', 'onFocus', 'onUnLoad', 'onBlur', 'onBeforeTransition', 'onAfterTransition']);
+
+		iui.flow.registerController('next', nextControllerContext);
+		iui.flow.registerController('third', thirdControllerContext);
+
+		nextController = iui.flow.loadController('next');
+		thirdController = iui.flow.loadController('third');
+
 		var dispatcher = {
-		
-			actions: [],
-		
 			dispatch: function(context){
 				var controller = context.getControllerName();
-		
-				if (controller !== 'third'){
-					return;
+				var action = context.getActionName();
+
+				if (controller === 'third'){
+					thirdController[action].apply(thirdController, [ context ]); 
 				}
-				this.actions.push(context);
+
+				if (controller === 'next'){
+					nextController[action].apply(nextController, [ context ]); 
+				}
+
 			}
 		
 		};
@@ -66,7 +99,7 @@ describe('iui.flow.Controller', function(){
 			iui.flow.Router.setDispatcher(dispatcher);
 
 			var controller = new iui.flow.Controller();
-			controller.moveTo('third');
+			controller.moveTo('next');
 
 		});
 
@@ -74,14 +107,38 @@ describe('iui.flow.Controller', function(){
 
 		runs(function(){
 
-			var actions = ['onLoad', 'onFocus', 'onBeforeTransition', 'onAfterTransition'];
+			var controller = new iui.flow.Controller();
+			controller.moveTo('third');
 
-			for (var i = 0; i < dispatcher.actions.length; i++){
-				expect( actions[i] ).toEqual( dispatcher.actions[i].getActionName() );
+		});
+
+		waits(300);
+
+
+		runs(function(){
+
+			var controller = new iui.flow.Controller();
+			controller.moveTo('next');
+
+		});
+
+		waits(300);
+
+
+		runs(function(){
+
+			var thirdPass = thirdController.pass; 
+			for (var key in thirdPass){
+				expect(thirdPass[key]).toEqual(true);
+			}
+
+			var nextPass = nextController.pass; 
+			for (var key in nextPass){
+				expect(nextPass[key]).toEqual(true);
 			}
 
 		});
-	
+
 	});
 
 });
