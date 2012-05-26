@@ -13,7 +13,7 @@ flow.mixin(flow.View, {
 
 		var elements = null;
 
-		elements = this.findAll('[data-flow-name=*]');
+		elements = this.findAll('[data-flow-name]');
 
 		if (elements === null){
 			return this;
