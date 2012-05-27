@@ -31,6 +31,10 @@ addEventListener("DOMContentLoaded", function(evt){
 }, false);
 
 
+flow.router = function(){
+	return flow.Router;
+}
+
 Observer = flow.Observer = {
 
 	handleEvent: function(evt){

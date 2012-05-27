@@ -1,17 +1,16 @@
 (function(flow){
 
 flow.Dispatcher = function Dispatcher(){
-
-
-
 }
-
 
 flow.mixin(flow.Dispatcher, {
 
 	_controllers: {},
 
 	setRouter: function(router){
+
+		router.setDispatcher(this);
+
 		this._router = router;
 		return this;
 	},
@@ -21,7 +20,6 @@ flow.mixin(flow.Dispatcher, {
 	},
 
 	register: function(identifier, controller){
-
 		if (controller.setIdentifier === void 0 || controller.setIdentifier === null){
 			throw new TypeError('invalid controller');
 		};
@@ -32,8 +30,10 @@ flow.mixin(flow.Dispatcher, {
 	},
 
 	loadController: function(identifier){
+
 		if (this._controllers[identifier] === undefined || this._controllers[identifier] === null){
-			throw new TypeError('invalid controller');
+//			throw new TypeError('invalid controller');
+			return;
 		}
 
 		return this._controllers[identifier];
@@ -46,6 +46,10 @@ flow.mixin(flow.Dispatcher, {
 		var actionName = context.getActionName();
 
 		controller = this.loadController(controllerName);
+		
+		if (controller === null){
+			return;
+		}
 
 		var view = controller.getView();
 
