@@ -32,7 +32,6 @@ flow.mixin(flow.Dispatcher, {
 	loadController: function(identifier){
 
 		if (this._controllers[identifier] === undefined || this._controllers[identifier] === null){
-//			throw new TypeError('invalid controller');
 			return;
 		}
 
@@ -41,17 +40,21 @@ flow.mixin(flow.Dispatcher, {
 
 	dispatch: function(context){
 
-		var controller = null;
-		var controllerName = context.getControllerName();
-		var actionName = context.getActionName();
+		var view = null,
+			controller = null,
+			controllerName = null,
+			actionName = null;
+
+		controllerName = context.getControllerName();
+		actionName = context.getActionName();
 
 		controller = this.loadController(controllerName);
-		
-		if (controller === null){
+
+		if (controller === void 0 || controller === null){
 			return;
 		}
 
-		var view = controller.getView();
+		view = controller.getView();
 
 		if (view === void 0 || view === null){
 
@@ -61,10 +64,13 @@ flow.mixin(flow.Dispatcher, {
 			controller.setView(view);
 		}
 
+		if (controller[actionName] === void 0 || controller[actionName] === null){
+			return;
+		}
+
 		controller[actionName].apply(controller, [ context ])
 	}
 
 });
-
 
 }(window.iui.flow));
